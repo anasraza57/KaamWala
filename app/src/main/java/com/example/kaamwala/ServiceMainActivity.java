@@ -13,9 +13,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,10 +32,17 @@ public class ServiceMainActivity extends AppCompatActivity implements Navigation
     DrawerLayout drawer;
     Toolbar toolbar;
     NavigationView navigationView;
+    TextView nameTextView;
+    Button loginButton;
 
     List<Service> servicesList;
     RecyclerView recyclerView;
     ServicesRecyclerViewAdapter recyclerViewAdapter;
+    String userID;
+    Boolean isLoggedIn = false;
+
+    FirebaseAuth auth;
+    FirebaseFirestore firestore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,24 +69,60 @@ public class ServiceMainActivity extends AppCompatActivity implements Navigation
 
         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        View headerView = navigationView.getHeaderView(0);
+        nameTextView = headerView.findViewById(R.id.nameText);
+
+        loginButton = findViewById(R.id.loginButton);
+
+        auth = FirebaseAuth.getInstance();
+        firestore = FirebaseFirestore.getInstance();
+        if (auth.getCurrentUser() != null) {
+            isLoggedIn = true;
+            loginButton.setText(R.string.logout);
+            userID = auth.getCurrentUser().getUid();
+            DocumentReference documentReference = firestore.collection("users").document(userID);
+            documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    if (documentSnapshot.exists()) {
+                        nameTextView.setText(documentSnapshot.getString("fullName"));
+                    }
+                }
+            });
+        }
 
         recyclerView = findViewById(R.id.recycler_view);
         initData();
 
-        recyclerViewAdapter = new ServicesRecyclerViewAdapter(this,servicesList);
+        recyclerViewAdapter = new ServicesRecyclerViewAdapter(this, servicesList, auth);
         recyclerView.setAdapter(recyclerViewAdapter);
-        recyclerView.setLayoutManager(new GridLayoutManager(this,2));
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isLoggedIn) {
+                    auth.signOut();
+                    Intent intent = new Intent(getApplicationContext(), ServiceMainActivity.class);
+                    startActivity(intent);
+                } else {
+                    Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
+                    startActivity(intent);
+                }
+                finish();
+            }
+        });
     }
 
     private void initData() {
         servicesList = new ArrayList<>();
-        servicesList.add(new Service("Plumber",R.drawable.plumbing_icon));
-        servicesList.add(new Service("Carpenter",R.drawable.carpenter_icon));
-        servicesList.add(new Service("Tailor",R.drawable.carpenter_icon2));
-        servicesList.add(new Service("Painter",R.drawable.logo));
-        servicesList.add(new Service("Electrician",R.drawable.electrician_icon));
-        servicesList.add(new Service("Locksmith",R.drawable.carpenter_icon2));
-        servicesList.add(new Service("Developer",R.drawable.plumbing_icon));
+        servicesList.add(new Service("Plumber", R.drawable.plumbing_icon));
+        servicesList.add(new Service("Carpenter", R.drawable.carpenter_icon));
+        servicesList.add(new Service("Tailor", R.drawable.carpenter_icon2));
+        servicesList.add(new Service("Painter", R.drawable.logo));
+        servicesList.add(new Service("Electrician", R.drawable.electrician_icon));
+        servicesList.add(new Service("Locksmith", R.drawable.carpenter_icon2));
+        servicesList.add(new Service("Developer", R.drawable.plumbing_icon));
     }
 
     @Override
@@ -98,7 +148,6 @@ public class ServiceMainActivity extends AppCompatActivity implements Navigation
         }
 
         drawer.closeDrawer(GravityCompat.START);
-
         return true;
     }
 
@@ -107,7 +156,6 @@ public class ServiceMainActivity extends AppCompatActivity implements Navigation
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-
             super.onBackPressed();
         }
     }

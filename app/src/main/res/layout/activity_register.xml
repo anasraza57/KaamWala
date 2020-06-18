@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="40dp"
-    tools:context=".LoginActivity">
+    tools:context=".PersonalDetailsActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,14 +23,15 @@
             android:textSize="18sp" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:layout_marginTop="20dp"
             android:id="@+id/phone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:focusable="true"
             android:focusableInTouchMode="true">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:drawableStart="@drawable/ic_phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/phone_number"
@@ -86,11 +87,13 @@
         </RelativeLayout>
 
         <Button
+            android:layout_marginTop="10dp"
+            android:id="@+id/next_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:background="@color/colorPrimaryDark"
-            android:text="@string/login"
+            android:text="@string/next"
             android:textColor="@android:color/white"
             android:textSize="20sp" />
     </LinearLayout>
