@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <item android:title="@string/my_info">
+        <menu>
+            <item
+                android:id="@+id/nav_my_addresses"
+                android:icon="@drawable/ic_menu_my_addresses"
+                android:title="@string/my_addresses" />
+            <item
+                android:id="@+id/nav_my_services"
+                android:icon="@drawable/ic_menu_service"
+                android:title="@string/my_services" />
+
+        </menu>
+    </item>
+
+    <item android:title="@string/others">
+        <menu>
+            <item
+                android:id="@+id/nav_help"
+                android:icon="@drawable/ic_menu_help"
+                android:title="@string/need_help" />
+            <item
+                android:id="@+id/nav_contact"
+                android:icon="@drawable/ic_menu_contact"
+                android:title="@string/contact_us" />
+            <item
+                android:id="@+id/nav_about"
+                android:icon="@drawable/ic_menu_about"
+                android:title="@string/abous_us" />
+        </menu>
+    </item>
+
+</menu>

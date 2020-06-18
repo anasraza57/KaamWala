@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "234024066817",
+    "firebase_url": "https://kaamwala-1a55d.firebaseio.com",
+    "project_id": "kaamwala-1a55d",
+    "storage_bucket": "kaamwala-1a55d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:234024066817:android:98eac0f0f7fd4c39d98500",
+        "android_client_info": {
+          "package_name": "com.example.kaamwala"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "234024066817-8anq10n1b6ejpuckms1cgh4u199l34pc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.kaamwala",
+            "certificate_hash": "bd161123015684b7ab607bf4d81ae29e0c5fe305"
+          }
+        },
+        {
+          "client_id": "234024066817-q0c1jcpov1fh048181kt6bbuj8fnmij1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVrKfAMzTWqzOjclnnkKUNmHygJO94vJo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "234024066817-q0c1jcpov1fh048181kt6bbuj8fnmij1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

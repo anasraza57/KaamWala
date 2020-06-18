@@ -1,14 +1,15 @@
 package com.example.kaamwala;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 public class SplashActivity extends AppCompatActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,7 +20,7 @@ public class SplashActivity extends AppCompatActivity {
         ImageView iv = findViewById(R.id.logo);
         Animation myanim = AnimationUtils.loadAnimation(this, R.anim.mytransition);
         iv.startAnimation(myanim);
-        final Intent intent = new Intent(this, MainActivity.class);
+        final Intent intent = new Intent(this, ServiceMainActivity.class);
         Thread timer = new Thread() {
             public void run() {
                 try {
