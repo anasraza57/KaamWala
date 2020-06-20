@@ -48,7 +48,9 @@ public class ServicesRecyclerViewAdapter extends RecyclerView.Adapter<ServicesRe
             public void onClick(View view) {
                 Toast.makeText(context, service.getName(), Toast.LENGTH_SHORT).show();
                 if (auth.getCurrentUser() != null) {
-                    Toast.makeText(context, "Not Null", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(context, RequestServiceActivity.class);
+                    intent.putExtra("service", service.getName());
+                    context.startActivity(intent);
                 } else {
                     context.startActivity(new Intent(context, RegisterActivity.class));
                 }

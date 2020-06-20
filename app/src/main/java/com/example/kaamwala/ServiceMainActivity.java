@@ -33,6 +33,7 @@ public class ServiceMainActivity extends AppCompatActivity implements Navigation
     Toolbar toolbar;
     NavigationView navigationView;
     TextView nameTextView;
+    TextView phoneTextView;
     Button loginButton;
 
     List<Service> servicesList;
@@ -71,6 +72,7 @@ public class ServiceMainActivity extends AppCompatActivity implements Navigation
         navigationView.setNavigationItemSelectedListener(this);
         View headerView = navigationView.getHeaderView(0);
         nameTextView = headerView.findViewById(R.id.nameText);
+        phoneTextView = headerView.findViewById(R.id.phoneText);
 
         loginButton = findViewById(R.id.loginButton);
 
@@ -86,6 +88,7 @@ public class ServiceMainActivity extends AppCompatActivity implements Navigation
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                     if (documentSnapshot.exists()) {
                         nameTextView.setText(documentSnapshot.getString("fullName"));
+                        phoneTextView.setText(auth.getCurrentUser().getPhoneNumber());
                     }
                 }
             });

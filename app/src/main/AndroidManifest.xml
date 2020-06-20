@@ -10,12 +10,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".RequestServiceActivity"
+            android:parentActivityName=".ServiceMainActivity" />
+        <activity
             android:name=".RegisterActivity"
             android:parentActivityName=".ServiceMainActivity" />
         <activity android:name=".PersonalDetailsActivity" />
         <activity
             android:name=".ServiceMainActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBarAndTransparentStatusBar" />
         <activity
             android:name=".SplashActivity"
             android:theme="@style/AppTheme.NoActionBar">
