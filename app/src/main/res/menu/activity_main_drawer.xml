@@ -6,9 +6,9 @@
     <item android:title="@string/my_info">
         <menu>
             <item
-                android:id="@+id/nav_my_addresses"
-                android:icon="@drawable/ic_menu_my_addresses"
-                android:title="@string/my_addresses" />
+                android:id="@+id/nav_my_profile"
+                android:icon="@drawable/ic_person"
+                android:title="@string/my_profile" />
             <item
                 android:id="@+id/nav_my_services"
                 android:icon="@drawable/ic_menu_service"

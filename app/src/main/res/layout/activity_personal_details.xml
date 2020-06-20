@@ -29,6 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableStart="@drawable/ic_person"
+            android:drawablePadding="10dp"
             android:hint="@string/full_name"
             android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -42,6 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableStart="@drawable/ic_email"
+            android:drawablePadding="10dp"
             android:hint="@string/email"
             android:inputType="textEmailAddress" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -55,6 +57,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableStart="@drawable/ic_location"
+            android:drawablePadding="10dp"
             android:hint="@string/address"
             android:inputType="textLongMessage" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -64,7 +67,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:background="@color/colorPrimaryDark"
         android:text="@string/save"
         android:textColor="@android:color/white"

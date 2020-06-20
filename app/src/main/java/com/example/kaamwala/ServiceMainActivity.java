@@ -133,8 +133,14 @@ public class ServiceMainActivity extends AppCompatActivity implements Navigation
 
         Intent intent = null;
         switch (item.getItemId()) {
-            case R.id.nav_my_addresses:
-                Toast.makeText(this, "My Address", Toast.LENGTH_LONG).show();
+            case R.id.nav_my_profile:
+                if (!isLoggedIn) {
+                    intent = new Intent(getApplicationContext(), RegisterActivity.class);
+                    finish();
+                } else {
+                    intent = new Intent(this, MyProfileActivity.class);
+                }
+                startActivity(intent);
                 break;
             case R.id.nav_my_services:
                 Toast.makeText(this, "My Services", Toast.LENGTH_LONG).show();

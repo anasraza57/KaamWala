@@ -31,10 +31,10 @@
             android:focusableInTouchMode="true">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:drawableStart="@drawable/ic_phone"
                 android:layout_width="match_parent"
-                android:drawablePadding="10dp"
                 android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_phone"
+                android:drawablePadding="10dp"
                 android:hint="@string/phone_number"
                 android:inputType="phone" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -67,6 +67,8 @@
                 android:id="@+id/codeEnter"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_dialpad"
+                android:drawablePadding="10dp"
                 android:visibility="invisible">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -88,11 +90,11 @@
         </RelativeLayout>
 
         <Button
-            android:layout_marginTop="10dp"
             android:id="@+id/next_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
             android:background="@color/colorPrimaryDark"
             android:text="@string/next"
             android:textColor="@android:color/white"

@@ -88,8 +88,6 @@ public class RequestServiceActivity extends AppCompatActivity implements RadioGr
         selectTimeButton.setOnClickListener(this);
         requestButton.setOnClickListener(this);
 
-//        timingGroup.clearCheck();
-
         timingGroup.setOnCheckedChangeListener(this);
         timingGroup.check(R.id.immediate);
 

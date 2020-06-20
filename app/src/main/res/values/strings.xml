@@ -12,7 +12,6 @@
     <string name="contact_us">Contact Us</string>
     <string name="need_help">Need Help?</string>
     <string name="my_services">My Services</string>
-    <string name="my_addresses">My Addresses</string>
     <string name="services">Services</string>
     <string name="email">Email</string>
     <string name="full_name">Full Name</string>
@@ -40,4 +39,6 @@
     <string name="later">Later</string>
     <string name="note">Note:</string>
     <string name="send_request">Send Request</string>
+    <string name="name">Name</string>
+    <string name="my_profile">My Profile</string>
 </resources>
