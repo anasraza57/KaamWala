@@ -36,6 +36,10 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore:21.4.3'
     // FirebaseUI for Cloud Firestore
     implementation 'com.firebaseui:firebase-ui-firestore:6.2.1'
+    implementation 'com.google.firebase:firebase-storage:19.1.1'
+    implementation 'com.squareup.picasso:picasso:2.5.2'
+    //circular imageView
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'

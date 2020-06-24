@@ -1,37 +1,63 @@
 package com.example.kaamwala;
 
+import android.content.ContentResolver;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Handler;
+import android.text.InputType;
+import android.view.View;
+import android.webkit.MimeTypeMap;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.DialogInterface;
-import android.os.Bundle;
-import android.text.InputType;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
-
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class MyProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private static final int PICK_IMAGE_REQUEST = 1;
     String userID;
     FirebaseAuth auth;
     FirebaseFirestore firestore;
+    StorageReference storageReference;
+    DocumentReference documentReference;
 
     TextView nameTextView, emailTextView, addressTextView, phoneTextView;
     ImageView nameEditIcon, emailEditIcon, addressEditIcon;
     EditText nameEditText, emailEditText, addressEditText;
+    ProgressBar progressBar;
+    CircleImageView profileImage;
 
+    Uri imageUri;
     AlertDialog dialog;
 
 
@@ -50,17 +76,20 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
         nameEditIcon = findViewById(R.id.editName);
         emailEditIcon = findViewById(R.id.editEmail);
         addressEditIcon = findViewById(R.id.editAddress);
+        profileImage = findViewById(R.id.profile_image);
+        progressBar = findViewById(R.id.progress_bar);
 
         nameEditIcon.setOnClickListener(this);
         emailEditIcon.setOnClickListener(this);
         addressEditIcon.setOnClickListener(this);
+        profileImage.setOnClickListener(this);
 
         auth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
 
         if (auth.getCurrentUser() != null) {
             userID = auth.getCurrentUser().getUid();
-            DocumentReference documentReference = firestore.collection("users").document(userID);
+            documentReference = firestore.collection("users").document(userID);
             documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -69,9 +98,12 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                         nameTextView.setText(documentSnapshot.getString("fullName"));
                         emailTextView.setText(documentSnapshot.getString("email"));
                         addressTextView.setText(documentSnapshot.getString("address"));
+                        String url = documentSnapshot.getString("profileUri");
+                        Picasso.with(getApplicationContext()).load(url).fit().centerCrop().into(profileImage);
                     }
                 }
             });
+            storageReference = FirebaseStorage.getInstance().getReference("profile_images");
         }
     }
 
@@ -129,6 +161,88 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                 });
                 dialog.show();
                 break;
+            case R.id.profile_image:
+                openFileChooser();
+                break;
+        }
+    }
+
+    private void openFileChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            imageUri = data.getData();
+            Picasso.with(this).load(imageUri).into(profileImage);
+            uploadFile();
+        }
+    }
+
+    private String getFileExtension(Uri uri) {
+        ContentResolver contentResolver = getContentResolver();
+        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
+    }
+
+    private void uploadFile() {
+        if (imageUri != null) {
+            final StorageReference imageReference = storageReference.child(userID + "." + getFileExtension(imageUri));
+            final UploadTask uploadTask = imageReference.putFile(imageUri);
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(final UploadTask.TaskSnapshot taskSnapshot) {
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            progressBar.setProgress(0);
+                        }
+                    }, 500);
+                    Toast.makeText(getApplicationContext(), "Uploaded Successful", Toast.LENGTH_SHORT).show();
+                    uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                        @Override
+                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                            if (!task.isSuccessful()) {
+                                throw task.getException();
+                            }
+                            return imageReference.getDownloadUrl();
+                        }
+                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (task.isSuccessful()) {
+                                String profileUrl = task.getResult().toString();
+                                final Map<String, Object> user = new HashMap<>();
+                                user.put("profileUri", profileUrl);
+                                documentReference.set(user, SetOptions.merge());
+                            }
+                        }
+                    });
+                }
+            })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
+                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                            progressBar.setProgress((int) progress);
+                        }
+                    });
+
+        } else {
+            Toast.makeText(getApplicationContext(), "No file selected", Toast.LENGTH_SHORT).show();
         }
     }
 }

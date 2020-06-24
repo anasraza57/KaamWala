@@ -42,4 +42,7 @@
     <string name="add_new_phone_number">Add New Phone Number</string>
     <string name="add_new_address">Add New Address</string>
     <string name="describe_about_your_problem">Describe about your problem...</string>
+    <string name="will_be_announce_soon">Will be Announce Soon</string>
+    <string name="dummy_email">customer.kaamwala@gmail.com</string>
+    <string name="search">Search</string>
 </resources>

@@ -1,10 +1,12 @@
 package com.example.kaamwala;
 
+import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.os.Bundle;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -39,7 +41,7 @@ public class MyServicesActivity extends AppCompatActivity {
 
         personalInfoRef = firestore.collection("users")
                 .document(auth.getCurrentUser().getUid());
-        serviceRef = personalInfoRef.collection("services");
+        serviceRef = personalInfoRef.collection("my_services");
         ;
 
         setUpRecyclerView();
@@ -52,11 +54,23 @@ public class MyServicesActivity extends AppCompatActivity {
         FirestoreRecyclerOptions<MyServicesModel> options = new FirestoreRecyclerOptions.Builder<MyServicesModel>()
                 .setQuery(query, MyServicesModel.class).build();
 
-        adapter = new MyServiceRecyclerAdapter(options, personalInfoRef, serviceRef, auth, getApplicationContext());
+        adapter = new MyServiceRecyclerAdapter(options, personalInfoRef, auth, getApplicationContext());
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                adapter.deleteItem(viewHolder.getAdapterPosition());
+            }
+        }).attachToRecyclerView(recyclerView);
 
     }
 

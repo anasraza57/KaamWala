@@ -225,7 +225,7 @@ public class RequestServiceActivity extends AppCompatActivity implements RadioGr
                     startActivity(new Intent(this, PersonalDetailsActivity.class));
                 } else {
                     CollectionReference collectionReference = firestore.collection("users").document(userID)
-                            .collection("services");
+                            .collection("my_services");
                     Map<String, Object> user = new HashMap<>();
                     user.put("serviceName", service);
                     int selectedRadioButtonId = phoneRadioGroup.getCheckedRadioButtonId();

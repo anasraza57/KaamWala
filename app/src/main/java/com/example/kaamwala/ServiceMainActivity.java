@@ -1,21 +1,25 @@
 package com.example.kaamwala;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.SearchView;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
+import androidx.core.view.MenuItemCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
@@ -25,17 +29,21 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ServiceMainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     DrawerLayout drawer;
     Toolbar toolbar;
     NavigationView navigationView;
-    TextView nameTextView;
-    TextView phoneTextView;
+    TextView nameTextView, phoneTextView;
+    ImageView imageView;
+    CircleImageView profileImageView;
     Button loginButton;
 
     List<ServiceModel> servicesList;
@@ -77,6 +85,7 @@ public class ServiceMainActivity extends AppCompatActivity implements Navigation
         View headerView = navigationView.getHeaderView(0);
         nameTextView = headerView.findViewById(R.id.nameText);
         phoneTextView = headerView.findViewById(R.id.phoneText);
+        profileImageView = headerView.findViewById(R.id.profile_image);
 
         loginButton = findViewById(R.id.loginButton);
 
@@ -87,13 +96,15 @@ public class ServiceMainActivity extends AppCompatActivity implements Navigation
             loginButton.setText(R.string.logout);
             userID = auth.getCurrentUser().getUid();
             documentReference = firestore.collection("users").document(userID);
-            servicesRef = documentReference.collection("services");
+            servicesRef = documentReference.collection("my_services");
             documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                     if (documentSnapshot.exists()) {
                         nameTextView.setText(documentSnapshot.getString("fullName"));
                         phoneTextView.setText(auth.getCurrentUser().getPhoneNumber());
+                        String url = documentSnapshot.getString("profileUri");
+                        Picasso.with(getApplicationContext()).load(url).fit().centerCrop().into(profileImageView);
                     }
                 }
             });
@@ -104,7 +115,7 @@ public class ServiceMainActivity extends AppCompatActivity implements Navigation
 
         recyclerViewAdapter = new ServicesRecyclerViewAdapter(this, servicesList, auth);
         recyclerView.setAdapter(recyclerViewAdapter);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,13 +135,13 @@ public class ServiceMainActivity extends AppCompatActivity implements Navigation
 
     private void initData() {
         servicesList = new ArrayList<>();
-        servicesList.add(new ServiceModel("Plumber", R.drawable.plumber_icon));
-        servicesList.add(new ServiceModel("Carpenter", R.drawable.carpenter_icon));
-        servicesList.add(new ServiceModel("Tailor", R.drawable.plumber_icon));
-        servicesList.add(new ServiceModel("Painter", R.drawable.logo));
-        servicesList.add(new ServiceModel("Electrician", R.drawable.electrician_icon));
-        servicesList.add(new ServiceModel("Locksmith", R.drawable.plumber_icon));
-        servicesList.add(new ServiceModel("Developer", R.drawable.carpenter_icon));
+        servicesList.add(new ServiceModel("Plumber", R.drawable.plumbing));
+        servicesList.add(new ServiceModel("Carpenter", R.drawable.carpenter));
+        servicesList.add(new ServiceModel("Tailor", R.drawable.tailor));
+        servicesList.add(new ServiceModel("Painter", R.drawable.painter));
+        servicesList.add(new ServiceModel("Electrician", R.drawable.electrician));
+        servicesList.add(new ServiceModel("Locksmith", R.drawable.locksmith));
+        servicesList.add(new ServiceModel("Developer", R.drawable.developer));
     }
 
     @Override
@@ -165,14 +176,9 @@ public class ServiceMainActivity extends AppCompatActivity implements Navigation
                     });
                 }
                 break;
-            case R.id.nav_help:
-                Toast.makeText(this, "Need Help?", Toast.LENGTH_LONG).show();
-                break;
             case R.id.nav_contact:
-                Toast.makeText(this, "Contact Us", Toast.LENGTH_LONG).show();
-                break;
-            case R.id.nav_about:
-                Toast.makeText(this, "About Us", Toast.LENGTH_LONG).show();
+                intent = new Intent(getApplicationContext(), ContactUsActivity.class);
+                startActivity(intent);
                 break;
         }
 
@@ -188,4 +194,31 @@ public class ServiceMainActivity extends AppCompatActivity implements Navigation
             super.onBackPressed();
         }
     }
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
+//
+//        MenuItem searchBar = menu.findItem(R.id.action_search);
+//        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchBar);
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String s) {
+//                //call when we press the search button
+//                searchData(s);
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String s) {
+//                //call when we type even a single letter
+//                return false;
+//            }
+//        });
+//        return super.onCreateOptionsMenu(menu);
+//    }
+//
+//    private void searchData(String s) {
+//        Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+//    }
 }

@@ -26,14 +26,12 @@ import java.text.SimpleDateFormat;
 public class MyServiceRecyclerAdapter extends FirestoreRecyclerAdapter<MyServicesModel, MyServiceRecyclerAdapter.ViewHolder> {
     Context context;
     DocumentReference personalInfoRef;
-    CollectionReference serviceRef;
     FirebaseAuth auth;
 
     public MyServiceRecyclerAdapter(@NonNull FirestoreRecyclerOptions<MyServicesModel> options,
-                                    DocumentReference documentReference, CollectionReference serviceRef, FirebaseAuth auth, Context applicationContext) {
+                                    DocumentReference documentReference, FirebaseAuth auth, Context applicationContext) {
         super(options);
         this.personalInfoRef = documentReference;
-        this.serviceRef = serviceRef;
         this.auth = auth;
         this.context = applicationContext;
     }
@@ -78,7 +76,7 @@ public class MyServiceRecyclerAdapter extends FirestoreRecyclerAdapter<MyService
                 dialog.setButton(DialogInterface.BUTTON_POSITIVE, "Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        serviceRef.document(model.getMyServiceId()).delete();
+                        deleteItem(position);
                     }
                 });
 
@@ -91,6 +89,10 @@ public class MyServiceRecyclerAdapter extends FirestoreRecyclerAdapter<MyService
                 dialog.show();
             }
         });
+    }
+
+    public void deleteItem(int position) {
+        getSnapshots().getSnapshot(position).getReference().delete();
     }
 
     @NonNull
