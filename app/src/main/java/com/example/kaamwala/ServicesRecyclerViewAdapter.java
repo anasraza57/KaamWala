@@ -6,9 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -20,10 +18,10 @@ import java.util.List;
 
 public class ServicesRecyclerViewAdapter extends RecyclerView.Adapter<ServicesRecyclerViewAdapter.ViewHolder> {
     private Context context;
-    private List<Service> servicesList;
+    private List<ServiceModel> servicesList;
     private FirebaseAuth auth;
 
-    public ServicesRecyclerViewAdapter(Context context, List<Service> servicesList, FirebaseAuth auth) {
+    public ServicesRecyclerViewAdapter(Context context, List<ServiceModel> servicesList, FirebaseAuth auth) {
         this.context = context;
         this.servicesList = servicesList;
         this.auth = auth;
@@ -39,16 +37,16 @@ public class ServicesRecyclerViewAdapter extends RecyclerView.Adapter<ServicesRe
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        final Service service = servicesList.get(position);
+        final ServiceModel serviceModel = servicesList.get(position);
 
-        holder.serviceName.setText(service.getName());
-        holder.serviceImageView.setImageResource(service.getThumbnail());
+        holder.serviceName.setText(serviceModel.getName());
+        holder.serviceImageView.setImageResource(serviceModel.getThumbnail());
         holder.serviceLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (auth.getCurrentUser() != null) {
                     Intent intent = new Intent(context, RequestServiceActivity.class);
-                    intent.putExtra("service", service.getName());
+                    intent.putExtra("service", serviceModel.getName());
                     context.startActivity(intent);
                 } else {
                     context.startActivity(new Intent(context, RegisterActivity.class));

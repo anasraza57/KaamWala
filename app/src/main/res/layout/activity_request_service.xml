@@ -1,171 +1,190 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="20dp"
     tools:context=".RequestServiceActivity">
 
-    <TextView
-        android:id="@+id/your_info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="@string/your_info"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="16sp" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal">
+        android:background="@color/cardview_shadow_end_colour"
+        android:orientation="vertical"
+        android:padding="10dp">
 
-        <TextView
-            android:id="@+id/phone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/your_phone_number" />
-
-        <TextView
-            android:id="@+id/phoneNumber"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:text="@string/dummy_phone_number" />
-    </LinearLayout>
+            android:background="@drawable/layout_border"
+            android:orientation="vertical"
+            android:padding="10dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/phone_number"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="15sp" />
 
-        <TextView
-            android:id="@+id/optional_phone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/add_optional" />
+            <RadioGroup
+                android:id="@+id/phoneRadio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
 
-        <EditText
-            android:id="@+id/optionalPhoneNumber"
+                <RadioButton
+
+                    android:id="@+id/phoneRadioText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/dummy_phone_number"
+                    android:textSize="15sp" />
+            </RadioGroup>
+
+            <Button
+                android:id="@+id/newPhone"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/colorAccent"
+                android:text="@string/add_new_phone_number"
+                android:textColor="@android:color/white" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:hint="@string/phone_number" />
+            android:layout_marginTop="10dp"
+            android:background="@drawable/layout_border"
+            android:orientation="vertical"
+            android:padding="10dp">
 
-    </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/address"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="15sp" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal">
+            <RadioGroup
+                android:id="@+id/addressRadio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
 
-        <TextView
-            android:id="@+id/address"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/your_address" />
+                <RadioButton
+                    android:id="@+id/addressRadioText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/address"
+                    android:textSize="15sp" />
+            </RadioGroup>
 
-        <TextView
-            android:id="@+id/addressText"
+            <Button
+                android:id="@+id/newAddress"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/colorAccent"
+                android:text="@string/add_new_address"
+                android:textColor="@android:color/white" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:text="@string/address" />
-    </LinearLayout>
+            android:layout_marginTop="10dp"
+            android:background="@drawable/layout_border"
+            android:orientation="vertical"
+            android:padding="10dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/timing"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="15sp" />
 
-        <TextView
-            android:id="@+id/optional_address"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/add_optional" />
+            <RadioGroup
+                android:id="@+id/timeRadio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
 
-        <EditText
-            android:id="@+id/optionalAddress"
+                <RadioButton
+                    android:id="@+id/immediate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/immediately"
+                    android:textSize="15sp" />
+
+                <RadioButton
+                    android:id="@+id/later"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/later"
+                    android:textSize="15sp" />
+            </RadioGroup>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/select_time"
+                    android:layout_width="110dp"
+                    android:layout_height="35dp"
+                    android:background="@color/colorAccent"
+                    android:text="@string/select_time"
+                    android:textColor="@android:color/white"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/selected_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:textSize="18sp"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:hint="@string/address" />
+            android:layout_marginTop="10dp"
+            android:background="@drawable/layout_border"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp">
 
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/timings"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="@string/timing"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="16sp" />
-
-    <RadioGroup
-        android:id="@+id/timing_radio"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp">
-
-        <RadioButton
-            android:id="@+id/immediate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/immediately" />
-
-        <RadioButton
-            android:id="@+id/later"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/later" />
-    </RadioGroup>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp">
+            <EditText
+                android:isScrollContainer="true"
+                android:id="@+id/descriptionBox"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:backgroundTint="@android:color/transparent"
+                android:gravity="top"
+                android:hint="@string/describe_about_your_problem" />
+        </LinearLayout>
 
         <Button
-            android:id="@+id/select_time"
-            android:layout_width="110dp"
+            android:id="@+id/requestButton"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginTop="10dp"
             android:background="@color/colorPrimaryDark"
-            android:text="@string/select_time"
-            android:textColor="@android:color/white"
-            android:visibility="gone" />
+            android:text="@string/send_request"
+            android:textColor="@android:color/white" />
 
-        <TextView
-            android:id="@+id/selected_time"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toEndOf="@+id/select_time"
-            android:gravity="end"
-            android:textSize="20sp"
-            android:visibility="gone" />
-    </RelativeLayout>
-
-    <EditText
-        android:id="@+id/note"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/note" />
-
-    <Button
-        android:id="@+id/requestButton"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginTop="10dp"
-        android:background="@color/colorPrimaryDark"
-        android:text="@string/send_request"
-        android:textColor="@android:color/white" />
-
-</LinearLayout>
+    </LinearLayout>
+</ScrollView>

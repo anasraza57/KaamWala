@@ -20,9 +20,11 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +38,7 @@ public class ServiceMainActivity extends AppCompatActivity implements Navigation
     TextView phoneTextView;
     Button loginButton;
 
-    List<Service> servicesList;
+    List<ServiceModel> servicesList;
     RecyclerView recyclerView;
     ServicesRecyclerViewAdapter recyclerViewAdapter;
     String userID;
@@ -44,6 +46,8 @@ public class ServiceMainActivity extends AppCompatActivity implements Navigation
 
     FirebaseAuth auth;
     FirebaseFirestore firestore;
+    DocumentReference documentReference;
+    CollectionReference servicesRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +86,8 @@ public class ServiceMainActivity extends AppCompatActivity implements Navigation
             isLoggedIn = true;
             loginButton.setText(R.string.logout);
             userID = auth.getCurrentUser().getUid();
-            DocumentReference documentReference = firestore.collection("users").document(userID);
+            documentReference = firestore.collection("users").document(userID);
+            servicesRef = documentReference.collection("services");
             documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -119,13 +124,13 @@ public class ServiceMainActivity extends AppCompatActivity implements Navigation
 
     private void initData() {
         servicesList = new ArrayList<>();
-        servicesList.add(new Service("Plumber", R.drawable.plumbing_icon));
-        servicesList.add(new Service("Carpenter", R.drawable.carpenter_icon));
-        servicesList.add(new Service("Tailor", R.drawable.carpenter_icon2));
-        servicesList.add(new Service("Painter", R.drawable.logo));
-        servicesList.add(new Service("Electrician", R.drawable.electrician_icon));
-        servicesList.add(new Service("Locksmith", R.drawable.carpenter_icon2));
-        servicesList.add(new Service("Developer", R.drawable.plumbing_icon));
+        servicesList.add(new ServiceModel("Plumber", R.drawable.plumbing_icon));
+        servicesList.add(new ServiceModel("Carpenter", R.drawable.carpenter_icon));
+        servicesList.add(new ServiceModel("Tailor", R.drawable.carpenter_icon2));
+        servicesList.add(new ServiceModel("Painter", R.drawable.logo));
+        servicesList.add(new ServiceModel("Electrician", R.drawable.electrician_icon));
+        servicesList.add(new ServiceModel("Locksmith", R.drawable.carpenter_icon2));
+        servicesList.add(new ServiceModel("Developer", R.drawable.plumbing_icon));
     }
 
     @Override
@@ -143,7 +148,22 @@ public class ServiceMainActivity extends AppCompatActivity implements Navigation
                 startActivity(intent);
                 break;
             case R.id.nav_my_services:
-                Toast.makeText(this, "My Services", Toast.LENGTH_LONG).show();
+                if (!isLoggedIn) {
+                    intent = new Intent(getApplicationContext(), RegisterActivity.class);
+                    finish();
+                } else {
+                    servicesRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                            if (!queryDocumentSnapshots.isEmpty()) {
+                                final Intent intent = new Intent(getApplicationContext(), MyServicesActivity.class);
+                                startActivity(intent);
+                            } else {
+                                Toast.makeText(getApplicationContext(), "No services yet", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+                }
                 break;
             case R.id.nav_help:
                 Toast.makeText(this, "Need Help?", Toast.LENGTH_LONG).show();

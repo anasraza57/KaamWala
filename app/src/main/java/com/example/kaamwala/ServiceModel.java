@@ -1,13 +1,13 @@
 package com.example.kaamwala;
 
-public class Service {
+public class ServiceModel {
     private String name;
     private int thumbnail;
 
-    public Service() {
+    public ServiceModel() {
     }
 
-    public Service(String name, int thumbnail) {
+    public ServiceModel(String name, int thumbnail) {
         this.name = name;
         this.thumbnail = thumbnail;
     }

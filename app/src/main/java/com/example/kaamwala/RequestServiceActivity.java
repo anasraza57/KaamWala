@@ -1,10 +1,13 @@
 package com.example.kaamwala;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -17,7 +20,9 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -25,6 +30,7 @@ import com.google.firebase.firestore.SetOptions;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,16 +38,20 @@ import java.util.Objects;
 
 public class RequestServiceActivity extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener, View.OnClickListener {
 
-    RadioGroup timingGroup;
-    TextView selectedTimeView, phoneNumberView, addressTextView;
-    Button selectTimeButton, requestButton;
-    EditText optionalPhoneText, optionalAddressText, noteText;
+    RadioGroup phoneRadioGroup, addressRadioGroup, timeRadioGroup;
+    RadioButton phoneRadioButton, addressRadioButton;
+    TextView selectedTimeView;
+    Button selectTimeButton, requestButton, newPhoneButton, newAddressButton;
+    EditText descriptionBox, dialogEditText;
 
     int hour, minute;
-    String userID;
+    String userID, currentDate;
     Boolean isUserDetailsExists = false;
     FirebaseAuth auth;
     FirebaseFirestore firestore;
+    String service;
+
+    AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,18 +60,25 @@ public class RequestServiceActivity extends AppCompatActivity implements RadioGr
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            String service = bundle.getString("service");
+            service = bundle.getString("service");
             Objects.requireNonNull(getSupportActionBar()).setTitle(service);
         } else {
             Objects.requireNonNull(getSupportActionBar()).setTitle("Request a Service");
         }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        phoneNumberView = findViewById(R.id.phoneNumber);
-        addressTextView = findViewById(R.id.addressText);
-        optionalPhoneText = findViewById(R.id.optionalPhoneNumber);
-        optionalAddressText = findViewById(R.id.optionalAddress);
-        noteText = findViewById(R.id.note);
+
+        phoneRadioGroup = findViewById(R.id.phoneRadio);
+        addressRadioGroup = findViewById(R.id.addressRadio);
+        timeRadioGroup = findViewById(R.id.timeRadio);
+        phoneRadioButton = findViewById(R.id.phoneRadioText);
+        addressRadioButton = findViewById(R.id.addressRadioText);
+        selectedTimeView = findViewById(R.id.selected_time);
+        selectTimeButton = findViewById(R.id.select_time);
+        requestButton = findViewById(R.id.requestButton);
+        descriptionBox = findViewById(R.id.descriptionBox);
+        newPhoneButton = findViewById(R.id.newPhone);
+        newAddressButton = findViewById(R.id.newAddress);
 
         auth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
@@ -74,22 +91,18 @@ public class RequestServiceActivity extends AppCompatActivity implements RadioGr
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                     if (documentSnapshot.exists()) {
                         isUserDetailsExists = true;
-                        phoneNumberView.setText(auth.getCurrentUser().getPhoneNumber());
-                        addressTextView.setText(documentSnapshot.getString("address"));
+                        phoneRadioButton.setText(auth.getCurrentUser().getPhoneNumber());
+                        addressRadioButton.setText(documentSnapshot.getString("address"));
                     }
                 }
             });
         }
 
-        timingGroup = findViewById(R.id.timing_radio);
-        selectedTimeView = findViewById(R.id.selected_time);
-        selectTimeButton = findViewById(R.id.select_time);
-        requestButton = findViewById(R.id.requestButton);
         selectTimeButton.setOnClickListener(this);
         requestButton.setOnClickListener(this);
-
-        timingGroup.setOnCheckedChangeListener(this);
-        timingGroup.check(R.id.immediate);
+        newPhoneButton.setOnClickListener(this);
+        newAddressButton.setOnClickListener(this);
+        timeRadioGroup.setOnCheckedChangeListener(this);
 
     }
 
@@ -98,6 +111,11 @@ public class RequestServiceActivity extends AppCompatActivity implements RadioGr
         if (checkId == R.id.later) {
             selectTimeButton.setVisibility(View.VISIBLE);
             selectedTimeView.setVisibility(View.VISIBLE);
+            Calendar calendar = Calendar.getInstance();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm aa");
+            String date = dateFormat.format(calendar.getTime());
+            currentDate = date.substring(0, date.indexOf(" "));
+            selectedTimeView.setText(dateFormat.format(calendar.getTime()));
         } else {
             selectTimeButton.setVisibility(View.GONE);
             selectedTimeView.setVisibility(View.GONE);
@@ -107,6 +125,66 @@ public class RequestServiceActivity extends AppCompatActivity implements RadioGr
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.newPhone:
+                dialog = new AlertDialog.Builder(this).create();
+                dialogEditText = new EditText(this);
+                dialog.setTitle("New Phone Number");
+                dialog.setView(dialogEditText);
+
+                dialog.setButton(DialogInterface.BUTTON_POSITIVE, "SAVE", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        final RadioButton radioButton = new RadioButton(getApplicationContext());
+                        radioButton.setText(dialogEditText.getText().toString());
+                        radioButton.setTextSize(15);
+                        ColorStateList colorStateList = new ColorStateList(
+                                new int[][]{
+                                        new int[]{-android.R.attr.state_checked},
+                                        new int[]{android.R.attr.state_checked}
+                                },
+                                new int[]{
+
+                                        Color.GRAY //disabled
+                                        , getResources().getColor(R.color.colorAccent) //enabled
+                                }
+                        );
+                        radioButton.setButtonTintList(colorStateList);
+                        phoneRadioGroup.addView(radioButton);
+                    }
+                });
+                dialog.show();
+                break;
+
+            case R.id.newAddress:
+                dialog = new AlertDialog.Builder(this).create();
+                dialogEditText = new EditText(this);
+                dialog.setTitle("New Address");
+                dialog.setView(dialogEditText);
+
+                dialog.setButton(DialogInterface.BUTTON_POSITIVE, "SAVE", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        final RadioButton radioButton = new RadioButton(getApplicationContext());
+                        radioButton.setText(dialogEditText.getText().toString());
+                        radioButton.setTextSize(15);
+                        ColorStateList colorStateList = new ColorStateList(
+                                new int[][]{
+                                        new int[]{-android.R.attr.state_checked},
+                                        new int[]{android.R.attr.state_checked}
+                                },
+                                new int[]{
+
+                                        Color.GRAY //disabled
+                                        , getResources().getColor(R.color.colorAccent) //enabled
+                                }
+                        );
+                        radioButton.setButtonTintList(colorStateList);
+                        addressRadioGroup.addView(radioButton);
+                    }
+                });
+                dialog.show();
+                break;
+
             case R.id.select_time:
                 TimePickerDialog timePickerDialog = new TimePickerDialog(RequestServiceActivity.this,
                         android.R.style.Theme_Holo_Light_Dialog_MinWidth,
@@ -123,7 +201,9 @@ public class RequestServiceActivity extends AppCompatActivity implements RadioGr
                                     Date date = f24Hours.parse(time);
                                     //initialize 12 hours time format
                                     SimpleDateFormat f12Hours = new SimpleDateFormat("hh:mm aa");
-                                    selectedTimeView.setText(f12Hours.format(date));
+                                    String selectedTime = f12Hours.format(date);
+                                    String dateNTime = currentDate + " " + selectedTime;
+                                    selectedTimeView.setText(dateNTime);
 
                                 } catch (ParseException e) {
                                     e.printStackTrace();
@@ -142,17 +222,30 @@ public class RequestServiceActivity extends AppCompatActivity implements RadioGr
                 if (!isUserDetailsExists) {
                     startActivity(new Intent(this, PersonalDetailsActivity.class));
                 } else {
-                    DocumentReference documentReference = firestore.collection("users").document(userID);
+                    CollectionReference collectionReference = firestore.collection("users").document(userID)
+                            .collection("services");
                     Map<String, Object> user = new HashMap<>();
-                    user.put("optionalPhone", optionalPhoneText.getText().toString());
-                    user.put("optionalAddress", optionalAddressText.getText().toString());
-                    if (timingGroup.getCheckedRadioButtonId() == R.id.immediate) {
+                    user.put("serviceName", service);
+                    int selectedRadioButtonId = phoneRadioGroup.getCheckedRadioButtonId();
+                    RadioButton radioButton = findViewById(selectedRadioButtonId);
+                    user.put("optionalPhone", radioButton.getText().toString());
+                    selectedRadioButtonId = addressRadioGroup.getCheckedRadioButtonId();
+                    radioButton = findViewById(selectedRadioButtonId);
+                    user.put("optionalAddress", radioButton.getText().toString());
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm aa");
+                    if (timeRadioGroup.getCheckedRadioButtonId() == R.id.immediate) {
                         user.put("timing", "Immediate");
                     } else {
-                        user.put("timing", selectedTimeView.getText().toString());
+                        try {
+                            Date date = dateFormat.parse(selectedTimeView.getText().toString());
+                            user.put("timing", date);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
                     }
-                    user.put("note", noteText.getText().toString());
-                    documentReference.set(user, SetOptions.merge());
+                    user.put("note", descriptionBox.getText().toString());
+                    user.put("status", "Pending");
+                    collectionReference.add(user);
                     openDialog();
                 }
                 break;
