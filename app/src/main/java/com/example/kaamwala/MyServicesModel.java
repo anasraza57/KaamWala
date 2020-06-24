@@ -1,6 +1,5 @@
 package com.example.kaamwala;
 
-import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.Exclude;
 
 import java.util.Date;

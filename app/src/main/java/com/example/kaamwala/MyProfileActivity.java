@@ -5,8 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -101,6 +101,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                 emailEditText = new EditText(this);
                 dialog.setTitle("Email");
                 dialog.setView(emailEditText);
+                emailEditText.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
                 emailEditText.setText(emailTextView.getText().toString());
                 dialog.setButton(DialogInterface.BUTTON_POSITIVE, "SAVE", new DialogInterface.OnClickListener() {
                     @Override

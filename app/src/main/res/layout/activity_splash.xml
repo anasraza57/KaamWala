@@ -3,22 +3,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/splash_gradiant_bg"
     android:gravity="center"
     android:orientation="vertical"
-    android:background="@drawable/splash_gradiant_bg"
     tools:context=".SplashActivity">
 
     <ImageView
         android:id="@+id/logo"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:src="@drawable/logo"
-        android:contentDescription="@string/logo_image" />
-    <TextView
-        android:textColor="#2d2d2d"
-        android:textSize="30sp"
-        android:text="@string/app_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:contentDescription="@string/logo_image"
+        android:src="@drawable/logo" />
+
+    <ImageView
+        android:id="@+id/kaam_wala"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:contentDescription="@string/logo_image"
+        android:src="@drawable/kaam_wala" />
 
 </LinearLayout>

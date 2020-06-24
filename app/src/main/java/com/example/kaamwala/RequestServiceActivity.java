@@ -3,7 +3,6 @@ package com.example.kaamwala;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,6 +10,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,13 +20,11 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -130,6 +128,7 @@ public class RequestServiceActivity extends AppCompatActivity implements RadioGr
             case R.id.newPhone:
                 dialog = new AlertDialog.Builder(this).create();
                 dialogEditText = new EditText(this);
+                dialogEditText.setInputType(InputType.TYPE_CLASS_PHONE);
                 dialog.setTitle("New Phone Number");
                 dialog.setView(dialogEditText);
 
@@ -160,6 +159,7 @@ public class RequestServiceActivity extends AppCompatActivity implements RadioGr
             case R.id.newAddress:
                 dialog = new AlertDialog.Builder(this).create();
                 dialogEditText = new EditText(this);
+                dialogEditText.setInputType(InputType.TYPE_CLASS_TEXT);
                 dialog.setTitle("New Address");
                 dialog.setView(dialogEditText);
 

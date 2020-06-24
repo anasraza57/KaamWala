@@ -124,13 +124,13 @@ public class ServiceMainActivity extends AppCompatActivity implements Navigation
 
     private void initData() {
         servicesList = new ArrayList<>();
-        servicesList.add(new ServiceModel("Plumber", R.drawable.plumbing_icon));
+        servicesList.add(new ServiceModel("Plumber", R.drawable.plumber_icon));
         servicesList.add(new ServiceModel("Carpenter", R.drawable.carpenter_icon));
-        servicesList.add(new ServiceModel("Tailor", R.drawable.carpenter_icon2));
+        servicesList.add(new ServiceModel("Tailor", R.drawable.plumber_icon));
         servicesList.add(new ServiceModel("Painter", R.drawable.logo));
         servicesList.add(new ServiceModel("Electrician", R.drawable.electrician_icon));
-        servicesList.add(new ServiceModel("Locksmith", R.drawable.carpenter_icon2));
-        servicesList.add(new ServiceModel("Developer", R.drawable.plumbing_icon));
+        servicesList.add(new ServiceModel("Locksmith", R.drawable.plumber_icon));
+        servicesList.add(new ServiceModel("Developer", R.drawable.carpenter_icon));
     }
 
     @Override
