@@ -16,7 +16,7 @@ public class RequestServiceActivityDialog extends AppCompatDialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Congratulations").setMessage("Your Request is Sent!")
+        builder.setTitle("Congratulations").setMessage("Your Request is Sent!\n\nWe Will Contact You Soon. ")
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

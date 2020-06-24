@@ -49,7 +49,8 @@ public class RequestServiceActivity extends AppCompatActivity implements RadioGr
     Boolean isUserDetailsExists = false;
     FirebaseAuth auth;
     FirebaseFirestore firestore;
-    String service;
+    String service, date;
+    SimpleDateFormat dateFormat;
 
     AlertDialog dialog;
 
@@ -104,6 +105,10 @@ public class RequestServiceActivity extends AppCompatActivity implements RadioGr
         newAddressButton.setOnClickListener(this);
         timeRadioGroup.setOnCheckedChangeListener(this);
 
+        Calendar calendar = Calendar.getInstance();
+        dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm aa");
+        date = dateFormat.format(calendar.getTime());
+
     }
 
     @Override
@@ -111,11 +116,8 @@ public class RequestServiceActivity extends AppCompatActivity implements RadioGr
         if (checkId == R.id.later) {
             selectTimeButton.setVisibility(View.VISIBLE);
             selectedTimeView.setVisibility(View.VISIBLE);
-            Calendar calendar = Calendar.getInstance();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm aa");
-            String date = dateFormat.format(calendar.getTime());
             currentDate = date.substring(0, date.indexOf(" "));
-            selectedTimeView.setText(dateFormat.format(calendar.getTime()));
+            selectedTimeView.setText(date);
         } else {
             selectTimeButton.setVisibility(View.GONE);
             selectedTimeView.setVisibility(View.GONE);
@@ -198,10 +200,10 @@ public class RequestServiceActivity extends AppCompatActivity implements RadioGr
                                 //initialize 24 hours time format
                                 SimpleDateFormat f24Hours = new SimpleDateFormat("HH:mm");
                                 try {
-                                    Date date = f24Hours.parse(time);
+                                    Date selectedDate = f24Hours.parse(time);
                                     //initialize 12 hours time format
                                     SimpleDateFormat f12Hours = new SimpleDateFormat("hh:mm aa");
-                                    String selectedTime = f12Hours.format(date);
+                                    String selectedTime = f12Hours.format(selectedDate);
                                     String dateNTime = currentDate + " " + selectedTime;
                                     selectedTimeView.setText(dateNTime);
 
@@ -232,9 +234,14 @@ public class RequestServiceActivity extends AppCompatActivity implements RadioGr
                     selectedRadioButtonId = addressRadioGroup.getCheckedRadioButtonId();
                     radioButton = findViewById(selectedRadioButtonId);
                     user.put("optionalAddress", radioButton.getText().toString());
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm aa");
                     if (timeRadioGroup.getCheckedRadioButtonId() == R.id.immediate) {
-                        user.put("timing", "Immediate");
+                        Date date1 = null;
+                        try {
+                            date1 = dateFormat.parse(date);
+                            user.put("timing", date1);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
                     } else {
                         try {
                             Date date = dateFormat.parse(selectedTimeView.getText().toString());

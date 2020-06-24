@@ -64,7 +64,7 @@ public class MyServicesActivity extends AppCompatActivity {
         FirestoreRecyclerOptions<MyServicesModel> options = new FirestoreRecyclerOptions.Builder<MyServicesModel>()
                 .setQuery(query, MyServicesModel.class).build();
 
-        adapter = new MyServiceRecyclerAdapter(options, personalInfoRef, auth);
+        adapter = new MyServiceRecyclerAdapter(options, personalInfoRef, serviceRef, auth, getApplicationContext());
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
