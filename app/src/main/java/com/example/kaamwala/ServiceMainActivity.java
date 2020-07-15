@@ -152,7 +152,6 @@ public class ServiceMainActivity extends AppCompatActivity implements Navigation
             case R.id.nav_my_profile:
                 if (!isLoggedIn) {
                     intent = new Intent(getApplicationContext(), RegisterActivity.class);
-                    finish();
                 } else {
                     intent = new Intent(this, MyProfileActivity.class);
                 }
@@ -161,7 +160,7 @@ public class ServiceMainActivity extends AppCompatActivity implements Navigation
             case R.id.nav_my_services:
                 if (!isLoggedIn) {
                     intent = new Intent(getApplicationContext(), RegisterActivity.class);
-                    finish();
+                    startActivity(intent);
                 } else {
                     servicesRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                         @Override

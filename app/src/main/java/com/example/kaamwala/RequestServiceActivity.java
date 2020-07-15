@@ -1,8 +1,5 @@
 package com.example.kaamwala;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,6 +15,10 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.TimePicker;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -184,6 +185,14 @@ public class RequestServiceActivity extends AppCompatActivity implements RadioGr
                         addressRadioGroup.addView(radioButton);
                     }
                 });
+                dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getText(R.string.search_on_map),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Intent intent = new Intent(RequestServiceActivity.this, GoogleMapsActivity.class);
+                                startActivityForResult(intent, 100);
+                            }
+                        });
                 dialog.show();
                 break;
 
@@ -262,5 +271,30 @@ public class RequestServiceActivity extends AppCompatActivity implements RadioGr
     private void openDialog() {
         RequestServiceActivityDialog dialog = new RequestServiceActivityDialog();
         dialog.show(getSupportFragmentManager(), "Congratulation Dialog");
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100 && resultCode == RESULT_OK) {
+            if (data != null && data.hasExtra("address")) {
+                final RadioButton radioButton = new RadioButton(getApplicationContext());
+                radioButton.setText(data.getStringExtra("address"));
+                radioButton.setTextSize(15);
+                ColorStateList colorStateList = new ColorStateList(
+                        new int[][]{
+                                new int[]{-android.R.attr.state_checked},
+                                new int[]{android.R.attr.state_checked}
+                        },
+                        new int[]{
+
+                                Color.GRAY //disabled
+                                , getResources().getColor(R.color.colorAccent) //enabled
+                        }
+                );
+                radioButton.setButtonTintList(colorStateList);
+                addressRadioGroup.addView(radioButton);
+            }
+        }
     }
 }

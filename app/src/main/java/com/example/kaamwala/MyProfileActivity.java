@@ -5,13 +5,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.InputType;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,7 +29,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
@@ -54,7 +51,6 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
     TextView nameTextView, emailTextView, addressTextView, phoneTextView;
     ImageView nameEditIcon, emailEditIcon, addressEditIcon;
     EditText nameEditText, emailEditText, addressEditText;
-    ProgressBar progressBar;
     CircleImageView profileImage;
 
     Uri imageUri;
@@ -77,7 +73,6 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
         emailEditIcon = findViewById(R.id.editEmail);
         addressEditIcon = findViewById(R.id.editAddress);
         profileImage = findViewById(R.id.profile_image);
-        progressBar = findViewById(R.id.progress_bar);
 
         nameEditIcon.setOnClickListener(this);
         emailEditIcon.setOnClickListener(this);
@@ -159,6 +154,14 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                         documentReference.set(user, SetOptions.merge());
                     }
                 });
+                dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getText(R.string.search_on_map),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Intent intent = new Intent(MyProfileActivity.this, GoogleMapsActivity.class);
+                                startActivityForResult(intent, 100);
+                            }
+                        });
                 dialog.show();
                 break;
             case R.id.profile_image:
@@ -182,6 +185,10 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
             imageUri = data.getData();
             Picasso.with(this).load(imageUri).into(profileImage);
             uploadFile();
+        } else if (requestCode == 100 && resultCode == RESULT_OK) {
+            if (data != null && data.hasExtra("address")) {
+                addressTextView.setText(data.getStringExtra("address"));
+            }
         }
     }
 
@@ -198,14 +205,6 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
             uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(final UploadTask.TaskSnapshot taskSnapshot) {
-                    Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            progressBar.setProgress(0);
-                        }
-                    }, 500);
-                    Toast.makeText(getApplicationContext(), "Uploaded Successful", Toast.LENGTH_SHORT).show();
                     uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                         @Override
                         public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
@@ -231,13 +230,6 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
-                            progressBar.setProgress((int) progress);
                         }
                     });
 
